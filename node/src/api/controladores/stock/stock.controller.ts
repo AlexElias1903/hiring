@@ -1,9 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { HistoryStock } from '../../../types/historyStock';
 import { StockQuote } from '../../../types/stockQuote';
-import { InvalidDate } from '../../../utils/invalidDate';
-import { InvalidStocks } from '../../../utils/invalidStocks';
-const request = require('request');
 import axios from 'axios';
 import { errorHandling } from '../../../utils/errorHandling';
 import { LastPrice } from '../../../types/lastPrice';
