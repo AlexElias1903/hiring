@@ -4,6 +4,7 @@ import { StockQuote } from '../../../types/stockQuote';
 import axios from 'axios';
 import { errorHandling } from '../../../utils/errorHandling';
 import { LastPrice } from '../../../types/lastPrice';
+import { GainsStocks } from '../../../types/gainsStocks';
 
 export async function quoteStockes(req: Request, Response: Response, next: NextFunction) {
     try {
@@ -56,17 +57,17 @@ export async function historyStockes(req: Request, Response: Response, next: Nex
                 erro: request.data
             });
         }
+        (data["Meta Data"]) ? (true) : (errorHandling("InvalidStocks", "Invalid stocks"));
         let dateFrom: Date = new Date((req.query.from || '').toString());
         let dateTo: Date = new Date((req.query.to || '').toString());
         let lastRefreshed: Date = new Date(data["Meta Data"]["3. Last Refreshed"]);
         let dateToday: Date = new Date();
         let dateHistoryString: string;
         dateToday.setUTCHours(0, 0, 0, 0);
-
+        (dateFrom.getTime() > lastRefreshed.getTime()) ? (true) : (errorHandling("InvalidDate", "date from is less than last refreshed"));
         (dateFrom.getTime() && dateTo.getTime()) ? (true) : (errorHandling("InvalidDate", "date from or date to is invalid"));
         (dateFrom.getTime() <= dateTo.getTime()) ? (true) : (errorHandling("InvalidDate", "date from is less then data to"));
         (dateFrom.getTime() < dateToday.getTime()) ? (true) : (errorHandling("InvalidDate", "date today is less then data from"));
-        (data["Meta Data"]) ? (true) : (errorHandling("InvalidStocks", "Invalid stocks"));
         let differenceDays = (dateTo.getTime() - dateFrom.getTime()) / (1000 * 3600 * 24);
         dateHistoryString = dateFrom.toISOString().slice(0, 10)
         let historyStock: HistoryStock = {
@@ -138,6 +139,71 @@ export async function compareStocks(req: Request, Response: Response, next: Next
         Response.status(200).json({
             lastPrices: lastPrices
         });
+    } catch (e) {
+        console.error(e);
+        Response.status(400).json({
+            erro: e
+        });
+    }
+}
+
+export async function capitalGains(req: Request, Response: Response, next: NextFunction) {
+    try {
+        var url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${req.params.stock_name}&outputsize=full&apikey=9UGRBYX6T21YAZS9`;
+        let name: string = req.params.stock_name
+        let request = await axios.get(url)
+        let dateNow: Date = new Date();
+        let data = request.data;
+        if (request.data["Error Message"]) {
+            Response.status(400).json({
+                erro: request.data["Error Message"]
+            })
+        }
+        if (request.status !== 200) {
+            console.log('Status:', request.data);
+            Response.status(request.status).json({
+                erro: request.data
+            });
+        }
+        (data["Meta Data"]) ? (true) : (errorHandling("InvalidStocks", "Invalid stocks"));
+        let purchasedAt: Date = new Date((req.query.purchasedAt || '').toString());
+        let lastRefreshed: Date = new Date(data["Meta Data"]["3. Last Refreshed"]);
+        let purchasedAmount: number = Number(req.query.purchasedAmount) || 0;
+        (purchasedAmount > 0) ? (true) : (errorHandling("InvalidAmount", `purchasedAmount needs to be bigger than ${purchasedAmount}`));
+        (purchasedAt.getTime() <= lastRefreshed.getTime()) ? (true) : (errorHandling("InvalidDate", "needs to be bigger than 0"));
+        let purchasedAtString;
+        let differenceDays = (lastRefreshed.getTime() - purchasedAt.getTime()) / (1000 * 3600 * 24);
+        let purchaseInformation: number = 0;
+        purchasedAtString = purchasedAt.toISOString().slice(0, 10);
+        let lastRefrashedString = lastRefreshed.toISOString().slice(0, 10);
+        let informationLastRefreshed = Number(data["Time Series (Daily)"][lastRefrashedString]["4. close"]);
+        if (data["Time Series (Daily)"][purchasedAtString]) {
+            purchaseInformation = Number(data["Time Series (Daily)"][purchasedAtString]["4. close"])
+        } else {
+            for (let i = 0; i <= differenceDays; i++) {
+                purchasedAt.setDate(purchasedAt.getDate() + 1);
+                purchasedAtString = purchasedAt.toISOString().slice(0, 10);
+                if (data["Time Series (Daily)"][purchasedAtString]) {
+                    purchaseInformation = Number(data["Time Series (Daily)"][purchasedAtString]["1. open"]);
+                    break;
+                }
+            }
+        }
+
+        let dateFormat = String(dateNow.getMonth() + 1).padStart(2, '0') + "-" + String(dateNow.getDate()).padStart(2, '0') + '-' + dateNow.getFullYear();
+        var url = `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateFormat}'&$top=100&$skip=0&$format=json`; //api banco central para a cotacao do dolar.
+        request = await axios.get(url);
+        (request.data.value[0]) ? (true) : (errorHandling("InvalidQuote", "error in quote api"));
+        let capitalGains: number = Number(((purchasedAmount * (informationLastRefreshed - purchaseInformation)) * request.data.value[0].cotacaoVenda).toFixed(2));
+        const capitalGainsStocks: GainsStocks = {
+            name: name,
+            purchasedAmount: purchasedAmount,
+            purchasedAt: purchasedAtString,
+            priceAtDate: purchaseInformation,
+            lastPrice: informationLastRefreshed,
+            capitalGains: capitalGains
+        }
+        Response.status(200).json(capitalGainsStocks);
     } catch (e) {
         console.error(e);
         Response.status(400).json({
