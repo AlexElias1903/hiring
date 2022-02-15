@@ -1,17 +1,32 @@
-import React from 'react';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'react-quill/dist/quill.snow.css';
+import 'nprogress/nprogress.css';
 import ReactDOM from 'react-dom';
-import './index.css';
+import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
+import { HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter } from 'react-router-dom';
+import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+import { Provider as ReduxProvider } from 'react-redux';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import * as serviceWorker from './serviceWorker';
+import store from './store';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <HelmetProvider>
+    <ReduxProvider store={store}>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </LocalizationProvider>
+    </ReduxProvider>
+  </HelmetProvider>
+  ,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+serviceWorker.unregister();
+
 reportWebVitals();
