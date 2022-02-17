@@ -471,13 +471,15 @@ describe('Stock Controler', () => {
     })
 
     it('capital gains sucess ', async () => {
+        let dateNow: Date = new Date();
+        let dateFormat = String(dateNow.getMonth() + 1).padStart(2, '0') + "-" + String(dateNow.getDate() - 1).padStart(2, '0') + '-' + dateNow.getFullYear();
         axios.get.mockImplementation((url) => {
             if (url === "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=USIM5.SA&outputsize=full&apikey=9UGRBYX6T21YAZS9") {
                 return Promise.resolve({
                     status: 200,
                     data: capitalGainsJson
                 })
-            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='02-15-2022'&$top=100&$skip=0&$format=json`) {
+            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateFormat}'&$top=100&$skip=0&$format=json`) {
                 return Promise.resolve({
                     status: 200,
                     data: apiBcb
@@ -539,13 +541,15 @@ describe('Stock Controler', () => {
     })
 
     it('capital gains sucess action not found on day', async () => {
+        let dateNow: Date = new Date();
+        let dateFormat = String(dateNow.getMonth() + 1).padStart(2, '0') + "-" + String(dateNow.getDate() - 1).padStart(2, '0') + '-' + dateNow.getFullYear();
         axios.get.mockImplementation((url) => {
             if (url === "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=USIM5.SA&outputsize=full&apikey=9UGRBYX6T21YAZS9") {
                 return Promise.resolve({
                     status: 200,
                     data: capitalGainsJson
                 })
-            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='02-15-2022'&$top=100&$skip=0&$format=json`) {
+            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateFormat}'&$top=100&$skip=0&$format=json`) {
                 return Promise.resolve({
                     status: 200,
                     data: apiBcb
@@ -561,43 +565,6 @@ describe('Stock Controler', () => {
                 purchasedAt: "2016-06-04"
             }
         });
-        const { res, next } = getMockRes();
-        await capitalGains(req, res, next);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({
-                "name": "USIM5.SA",
-                "purchasedAmount": 100,
-                "purchasedAt": "2016-06-06",
-                "priceAtDate": 1.86,
-                "lastPrice": 15.59,
-                "capitalGains": 7123.26
-            })
-        )
-    })
-
-    it('capital gains sucess', async () => {
-        axios.get.mockImplementation((url) => {
-            if (url === "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=USIM5.SA&outputsize=full&apikey=9UGRBYX6T21YAZS9") {
-                return Promise.resolve({
-                    status: 200,
-                    data: capitalGainsJson
-                })
-            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='02-15-2022'&$top=100&$skip=0&$format=json`) {
-                return Promise.resolve({
-                    status: 200,
-                    data: apiBcb
-                })
-            }
-        });
-        const req = getMockReq({
-            params: {
-                stock_name: 'USIM5.SA'
-            },
-            query: {
-                purchasedAmount: 100,
-                purchasedAt: "2016-06-04"
-            }
-        })
         const { res, next } = getMockRes();
         await capitalGains(req, res, next);
         expect(res.json).toHaveBeenCalledWith(
@@ -613,13 +580,15 @@ describe('Stock Controler', () => {
     })
 
     it('capital gains fail (purchasedAmount needs to be bigger than 0")', async () => {
+        let dateNow: Date = new Date();
+        let dateFormat = String(dateNow.getMonth() + 1).padStart(2, '0') + "-" + String(dateNow.getDate() - 1).padStart(2, '0') + '-' + dateNow.getFullYear();
         axios.get.mockImplementation((url) => {
             if (url === "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=USIM5.SA&outputsize=full&apikey=9UGRBYX6T21YAZS9") {
                 return Promise.resolve({
                     status: 200,
                     data: capitalGainsJson
                 })
-            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='02-15-2022'&$top=100&$skip=0&$format=json`) {
+            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateFormat}'&$top=100&$skip=0&$format=json`) {
                 return Promise.resolve({
                     status: 200,
                     data: apiBcb
@@ -644,13 +613,15 @@ describe('Stock Controler', () => {
     })
 
     it('capital gains fail (date needs to be smaller")', async () => {
+        let dateNow: Date = new Date();
+        let dateFormat = String(dateNow.getMonth() + 1).padStart(2, '0') + "-" + String(dateNow.getDate() - 1).padStart(2, '0') + '-' + dateNow.getFullYear();
         axios.get.mockImplementation((url) => {
             if (url === "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=USIM5.SA&outputsize=full&apikey=9UGRBYX6T21YAZS9") {
                 return Promise.resolve({
                     status: 200,
                     data: capitalGainsJson
                 })
-            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='02-15-2022'&$top=100&$skip=0&$format=json`) {
+            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateFormat}'&$top=100&$skip=0&$format=json`) {
                 return Promise.resolve({
                     status: 200,
                     data: apiBcb
@@ -678,14 +649,17 @@ describe('Stock Controler', () => {
         )
     })
 
-    it('capital gains sucess', async () => {
+    it('capital gains sucess (error api dollar exchange rate)', async () => {
+        let dateNow: Date = new Date();
+        let dateFormat = String(dateNow.getMonth() + 1).padStart(2, '0') + "-" + String(dateNow.getDate() - 1).padStart(2, '0') + '-' + dateNow.getFullYear();
         axios.get.mockImplementation((url) => {
+            console.log(url)
             if (url === "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=USIM5.SA&outputsize=full&apikey=9UGRBYX6T21YAZS9") {
                 return Promise.resolve({
                     status: 200,
                     data: capitalGainsJson
                 })
-            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='02-15-2022'&$top=100&$skip=0&$format=json`) {
+            } else if (url === `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateFormat}'&$top=100&$skip=0&$format=json`) {
                 return Promise.resolve({
                     status: 400,
                     data: {}

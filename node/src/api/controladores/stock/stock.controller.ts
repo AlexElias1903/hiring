@@ -193,6 +193,7 @@ export async function capitalGains(req: Request, Response: Response, next: NextF
         var url = `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateFormat}'&$top=100&$skip=0&$format=json`; //api banco central para a cotacao do dolar.
         request = await axios.get(url);
         (request.status === 200) ? (true) : (errorHandling("InvalidQuote", "error api dollar exchange rate"));
+        console.log(request.status, '*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-');
         let capitalGains: number = Number(((purchasedAmount * (informationLastRefreshed - purchaseInformation)) * request.data.value[0].cotacaoVenda).toFixed(2));
         const capitalGainsStocks: GainsStocks = {
             name: name,

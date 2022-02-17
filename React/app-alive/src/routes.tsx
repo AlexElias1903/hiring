@@ -43,13 +43,13 @@ const routes = [
       }
     ]
   },
-{
+  {
     path: '*',
     element: <DashboardLayout />,
     children: [
       {
         path: '/',
-        element:<Overview />
+        element: <DashboardLayout />
       }
     ]
   }
