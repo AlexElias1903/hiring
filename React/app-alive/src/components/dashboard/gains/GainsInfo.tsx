@@ -80,7 +80,6 @@ const GainsInfo: FC = (props) => {
         setSubmitting
       }): Promise<void> => {
         try {
-          console.log(values.amount)
           const response = await axiosConfig.get(`http://127.0.0.1:8080/stocks/${values.stocks}/gains?purchasedAmount=${values.amount}&purchasedAt=${values.buyDate.toISOString().slice(0, 10)}`);
           setResposta(response.data)
           setStatus({ success: true });

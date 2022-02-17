@@ -1,4 +1,3 @@
-
 export class InvalidQuote {
     message: String
     name: String

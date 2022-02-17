@@ -4,7 +4,7 @@ import { InvalidDate } from "./invalidDate";
 import { InvalidQuote } from "./invalidQuote";
 import { InvalidStocks } from "./invalidStocks";
 
-export function errorHandling(errorType: String, menssageError: String): Boolean {
+export function errorHandling(errorType: String, menssageError: String) {
     if (errorType === "InvalidDate") {
         throw new InvalidDate(menssageError)
     } else if (errorType === "InvalidStocks") {
@@ -13,8 +13,8 @@ export function errorHandling(errorType: String, menssageError: String): Boolean
         throw new InvalidCompare(menssageError)
     } else if (errorType === "InvalidQuote") {
         throw new InvalidQuote(menssageError)
-    } else if (errorType === "InvalidAmount") {
-        throw new InvalidAmount(menssageError)
     }
-    return true
+    throw new InvalidAmount(menssageError)
+
+
 }

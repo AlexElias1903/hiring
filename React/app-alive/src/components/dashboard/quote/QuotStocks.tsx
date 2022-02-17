@@ -57,7 +57,6 @@ const QuotStocks: FC = (props) => {
         setSubmitting
       }): Promise<void> => {
         try {
-          console.log(values.stocks);
           const response = await axiosConfig.get(`http://127.0.0.1:8080/stocks/${values.stocks}/quote`);
           setResposta(response.data)
           setStatus({ success: true });
