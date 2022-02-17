@@ -49,7 +49,7 @@ const routes = [
     children: [
       {
         path: '/',
-        element: <DashboardLayout />
+        element: <Overview />
       }
     ]
   }
