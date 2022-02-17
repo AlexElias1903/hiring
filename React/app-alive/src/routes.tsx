@@ -1,5 +1,4 @@
 import { Suspense, lazy } from 'react';
-import type { PartialRouteObject } from 'react-router';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 
 const Loadable = (Component) => (props) => (
@@ -15,7 +14,7 @@ const Gains = Loadable(lazy(() => import('./pages/dashboard/Gains')));
 const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')));
 
 
-const routes: PartialRouteObject[] = [
+const routes = [
   {
     path: 'dashboard',
     element: (
@@ -50,7 +49,7 @@ const routes: PartialRouteObject[] = [
     children: [
       {
         path: '/',
-        element:<DashboardLayout />
+        element:<Overview />
       }
     ]
   }
