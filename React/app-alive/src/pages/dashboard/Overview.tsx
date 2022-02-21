@@ -10,16 +10,8 @@ import {
 import {
   OverviewTotalBalance
 } from '../../components/dashboard/overview';
-import useSettings from '../../hooks/useSettings';
-
-import gtm from '../../lib/gtm';
 
 const Overview: FC = () => {
-  const { settings } = useSettings();
-
-  useEffect(() => {
-    gtm.push({ event: 'page_view' });
-  }, []);
 
   return (
     <>
@@ -33,7 +25,7 @@ const Overview: FC = () => {
           py: 8
         }}
       >
-        <Container maxWidth={settings.compact ? 'xl' : false}>
+        <Container maxWidth={ 'xl'}>
           <Grid
             container
             spacing={3}

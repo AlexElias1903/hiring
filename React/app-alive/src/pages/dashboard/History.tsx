@@ -7,15 +7,8 @@ import {
   Grid
 } from '@material-ui/core';
 import { HistoryStocks } from 'src/components/dashboard/historyStocks';
-import useSettings from '../../hooks/useSettings';
-import gtm from '../../lib/gtm';
 
 const History: FC = () => {
-  const { settings } = useSettings();
-
-  useEffect(() => {
-    gtm.push({ event: 'page_view' });
-  }, []);
 
   return (
     <>
@@ -23,7 +16,7 @@ const History: FC = () => {
         <title>Historico ação</title>
       </Helmet>
       <Box mt={5}>
-        <Container maxWidth={settings.compact ? 'xl' : false}>
+        <Container maxWidth={'xl'}>
           <Grid
             container
             spacing={3}

@@ -7,15 +7,8 @@ import {
   Grid
 } from '@material-ui/core';
 import { GainsInfo } from 'src/components/dashboard/gains';
-import useSettings from '../../hooks/useSettings';
-import gtm from '../../lib/gtm';
 
 const Gains: FC = () => {
-  const { settings } = useSettings();
-
-  useEffect(() => {
-    gtm.push({ event: 'page_view' });
-  }, []);
 
   return (
     <>
@@ -23,7 +16,7 @@ const Gains: FC = () => {
         <title>Calcular ganho</title>
       </Helmet>
       <Box mt={5}>
-        <Container maxWidth={settings.compact ? 'xl' : false}>
+        <Container maxWidth={'xl'}>
           <Grid
             container
             spacing={3}

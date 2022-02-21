@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import type { FC } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
@@ -7,15 +6,9 @@ import {
   Grid
 } from '@material-ui/core';
 import { QuotStocks } from 'src/components/dashboard/quote';
-import useSettings from '../../hooks/useSettings';
-import gtm from '../../lib/gtm';
+
 
 const Quote: FC = () => {
-  const { settings } = useSettings();
-
-  useEffect(() => {
-    gtm.push({ event: 'page_view' });
-  }, []);
 
   return (
     <>
@@ -27,7 +20,7 @@ const Quote: FC = () => {
           py: 8
         }}
       >
-        <Container maxWidth={settings.compact ? 'xl' : false}>
+        <Container maxWidth={'xl'}>
           <Grid
             container
             spacing={3}
